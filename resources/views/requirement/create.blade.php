@@ -47,16 +47,48 @@
                     <label for="floatingTextarea2">Referencias</label><i class="bar"></i>
                 </div>
             </div>
-            <div class="input-group mb-3">
-                <input name="files" type="file" class="form-control" id="inputGroupFile02">
-                <label class="input-group-text" for="inputGroupFile02">Subir archivo</label>
+            <div class="container mt-5">
+                <div id="fileInputsContainer" class="mb-3">
+                    <!-- Contenedor para los inputs de archivo -->
+                    <div class="input-group mb-3">
+                        <input name="files[]" type="file" class="form-control">
+                    </div>
+                </div>
+        
+                <div class="template-demo">
+                    <button type="button" class="text-light btn btn-social-icon-text btn-youtube" id="addFileButton">
+                        <i class="ti-plus text-light"></i> Agregar archivo
+                    </button>
+                </div>
             </div>
-            <div class="button-container text-center">
-                <button type="submit" class="button btn btn-primary"><span>Enviar solicitud</span></button >
+            <div class="button-container text-center template-demo">
+                <button type="submit" class="btn btn-primary btn-icon-text text-light">
+                  <i class="ti-file btn-icon-prepend text-light"></i> Enviar solicitud </button>
             </div>
         </form>
       </div>
     </div>
   </div>
+  <script>
+    document.getElementById('addFileButton').addEventListener('click', function() {
+        // Encuentra el contenedor para los inputs de archivo
+        var container = document.getElementById('fileInputsContainer');
+        
+        // Crea un nuevo div para el input de archivo
+        var newDiv = document.createElement('div');
+        newDiv.classList.add('input-group', 'mb-3');
 
+        // Crea el nuevo input de archivo
+        var newInput = document.createElement('input');
+        newInput.name = 'files[]'; // Usa un nombre de array para manejar múltiples archivos en el servidor
+        newInput.type = 'file';
+        newInput.classList.add('form-control');
+        
+        // Añade el input al nuevo div
+        newDiv.appendChild(newInput);
+        
+        // Añade el nuevo div al contenedor
+        container.appendChild(newDiv);
+    });
+</script>
 @endsection

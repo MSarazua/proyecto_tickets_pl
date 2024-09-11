@@ -40,6 +40,7 @@ class RequirementsController extends Controller
     {
         DB::beginTransaction();
         try {
+            // Crea un nuevo registro en Requirement
             $requirement = new Requirement;
             $requirement->user_id = $request->user_id;
             $requirement->requirement_title = $request->requirement_title;
@@ -48,21 +49,28 @@ class RequirementsController extends Controller
             $requirement->description = $request->description;
             $requirement->references = $request->references;
             $requirement->save();
-            $requirement_detail = new RequirementDetail;
-            $requirement_detail->requirement_id = $requirement->id;
+
             if ($request->hasFile('files')) {
-                $requirement_detail->files = $request->file('files')->store('public');
+                $files = $request->file('files');
+
+                foreach ($files as $file) {
+                    $requirement_detail = new RequirementDetail;
+                    $requirement_detail->requirement_id = $requirement->id;
+                    $requirement_detail->files = $file->store('public');
+                    $requirement_detail->save();
+                }
             }
-            $requirement_detail->save();
+
+            DB::commit();
+            return redirect()->action([RequirementsController::class, 'index'])->with(['mensaje' => 'Solicitud enviada con éxito']);
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
-            dd($e);
+            dd($e); // Depura el error
             abort(500, $e->errorInfo[2]);
             return response()->json($response, 500);
         }
-        DB::commit();
-        return redirect()->action([RequirementsController::class, 'index'])->with(['mensaje' => 'Solicitud enviada con éxito']);
     }
+
 
     /**
      * Display the specified resource.

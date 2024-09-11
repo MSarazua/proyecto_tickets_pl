@@ -27,6 +27,22 @@
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />
   </head>
+  <style>
+    .btn-social-icon-text {
+        display: inline-flex;
+        align-items: center; /* Alinea verticalmente el icono y el texto */
+        gap: 8px; /* Espacio entre el icono y el texto */
+        padding: 8px 16px; /* Ajusta el relleno según sea necesario */
+        font-size: 16px; /* Ajusta el tamaño de fuente según sea necesario */
+        border: none; /* O ajusta según el estilo que necesites */
+        background-color: #FF0000; /* Color de fondo para el botón */
+        color: white; /* Color del texto e icono */
+    }
+
+    .btn-social-icon-text i {
+        font-size: 20px; /* Tamaño del icono */
+    }
+  </style>
   <body class="with-welcome-text">
     <div class="container-scroller">
       <div class="row p-0 m-0 proBanner" id="proBanner">

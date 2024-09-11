@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('requirement_title');
             $table->string('area');
             $table->integer('priority');
-            $table->string('description');
+            $table->longText('description');
             $table->string('references');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
