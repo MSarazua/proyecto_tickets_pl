@@ -15,9 +15,9 @@
             <div class="form-group">
                 <select name="area" class="js-example-basic-single w-100">
                     <option selected>Área de solicitud</option>
-                    <option value="1">Suscripciones</option>
-                    <option value="2">Redacción</option>
-                    <option value="3">B2B</option>
+                    @foreach ($objetc as $item)
+                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                    @endforeach
                 </select>
               </div>
             <div class="mt-5">
@@ -48,13 +48,13 @@
                 </div>
             </div>
             <div class="container mt-5">
+                <h5 class="card-title">Adjuntar archivos</h5>
                 <div id="fileInputsContainer" class="mb-3">
                     <!-- Contenedor para los inputs de archivo -->
                     <div class="input-group mb-3">
                         <input name="files[]" type="file" class="form-control">
                     </div>
                 </div>
-        
                 <div class="template-demo">
                     <button type="button" class="text-light btn btn-social-icon-text btn-youtube" id="addFileButton">
                         <i class="ti-plus text-light"></i> Agregar archivo
@@ -71,10 +71,9 @@
   </div>
   <script>
     document.getElementById('addFileButton').addEventListener('click', function() {
-        // Encuentra el contenedor para los inputs de archivo
         var container = document.getElementById('fileInputsContainer');
         
-        // Crea un nuevo div para el input de archivo
+        // Crea un nuevo div para el input de archivo y el botón de eliminación
         var newDiv = document.createElement('div');
         newDiv.classList.add('input-group', 'mb-3');
 
@@ -84,11 +83,25 @@
         newInput.type = 'file';
         newInput.classList.add('form-control');
         
-        // Añade el input al nuevo div
+        // Crea el botón de eliminación
+        var removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'remove-file-btn');
+        removeButton.textContent = 'Eliminar';
+
+        // Añade el input y el botón al nuevo div
         newDiv.appendChild(newInput);
+        newDiv.appendChild(removeButton);
         
         // Añade el nuevo div al contenedor
         container.appendChild(newDiv);
     });
-</script>
+
+    document.getElementById('fileInputsContainer').addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove-file-btn')) {
+            var divToRemove = event.target.parentElement;
+            divToRemove.remove(); // Elimina el div contenedor del input y el botón de eliminación
+        }
+    });
+  </script>
 @endsection

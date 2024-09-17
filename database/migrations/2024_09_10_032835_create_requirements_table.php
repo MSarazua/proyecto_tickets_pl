@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('requirements', function (Blueprint $table) {
             $table->id();
             $table->string('requirement_title');
-            $table->string('area');
             $table->integer('priority');
             $table->longText('description');
             $table->string('references');

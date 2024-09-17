@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Area;
 use App\Models\Requirement;
 use App\Models\RequirementDetail;
 use Illuminate\Http\Request;
@@ -17,7 +18,9 @@ class RequirementsController extends Controller
      */
     public function index()
     {
-        return view('requirement.create');
+        $requirements = Requirement::with(['user', 'area'])->get();
+        $objetc = Requirement::all();
+        return view('requirement.index', ['objetc' => $objetc, 'requirements' => $requirements]);
     }
 
     /**
@@ -27,7 +30,8 @@ class RequirementsController extends Controller
      */
     public function create()
     {
-        return view('requirement.create');
+        $objetc = Area::all();
+        return view('requirement.create', ['objetc' => $objetc]);
     }
 
     /**
@@ -44,7 +48,7 @@ class RequirementsController extends Controller
             $requirement = new Requirement;
             $requirement->user_id = $request->user_id;
             $requirement->requirement_title = $request->requirement_title;
-            $requirement->area = $request->area;
+            $requirement->area_id = $request->area;
             $requirement->priority = $request->priority;
             $requirement->description = $request->description;
             $requirement->references = $request->references;
@@ -65,7 +69,7 @@ class RequirementsController extends Controller
             return redirect()->action([RequirementsController::class, 'index'])->with(['mensaje' => 'Solicitud enviada con éxito']);
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
-            dd($e); // Depura el error
+            dd($e);
             abort(500, $e->errorInfo[2]);
             return response()->json($response, 500);
         }
