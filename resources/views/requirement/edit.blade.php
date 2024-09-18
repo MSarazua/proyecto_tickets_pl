@@ -71,42 +71,62 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <tbody>
-                                <tr>
-                                    <th>Título</th>
-                                    <td>{{ $objetc->requirement_title }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Referencias</th>
-                                    <td><a href="{{ $objetc->references }}">{{ $objetc->references }}</a></td>
-                                </tr>
-                                <tr>
-                                    <th>Solicitado por:</th>
-                                    <td>{{ $objetc->user->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Área de solicitud</th>
-                                    <td>{{ $objetc->area->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Fecha de solicitud</th>
-                                    <td>{{ $objetc->created_at }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Prioridad</th>
-                                    
-                                    @if ($objetc->priority == 0)
-                                        <td><label class="badge badge-danger">Alta</label></td>
-                                    @elseif ($objetc->priority == 1)
-                                        <td><label class="badge badge-warning">Media</label></td>
-                                    @elseif ($objetc->priority == 2)
-                                        <td><label class="badge badge-success">Baja</label></td>
+                        <form action="{{ route('requerimientos.update', $objetc->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th>Título</th>
+                                        <td>{{ $objetc->requirement_title }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Referencias</th>
+                                        <td><a href="{{ $objetc->references }}">{{ $objetc->references }}</a></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Solicitado por:</th>
+                                        <td>{{ $objetc->user->name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Área de solicitud</th>
+                                        <td>{{ $objetc->area->name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Fecha de solicitud</th>
+                                        <td>{{ $objetc->created_at }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Prioridad</th>
+                                        
+                                        @if ($objetc->priority == 0)
+                                            <td><label class="badge badge-danger">Alta</label></td>
+                                        @elseif ($objetc->priority == 1)
+                                            <td><label class="badge badge-warning">Media</label></td>
+                                        @elseif ($objetc->priority == 2)
+                                            <td><label class="badge badge-success">Baja</label></td>
+                                        @endif
+                                    </tr>
+                                    @if ($currentUser->hasRole('Admin'))
+                                        <tr>
+                                            <th>Asignar tarea:</th>
+                                            <td>
+                                                <select name="dev_user_id" class="js-example-basic-single w-100">
+                                                    <option value="" disabled selected>Seleccione un desarrollador</option>
+                                                    @foreach ($devUsers as $user)
+                                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <button type="submit" class="btn btn-dark btn-icon-text text-light"> Asignar 
+                                                    <i class="ti-file btn-icon-append"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
                                     @endif
-                                </tr>
-                            </tbody>
-                        </table>
-                        <textarea style="width: 100%; height: 200px">{{ $objetc->description }}</textarea>
+                                </tbody>
+                            </table>
+                            <textarea style="width: 100%; height: 200px">{{ $objetc->description }}</textarea>
+                        </form>
                     </div>
                 </div>
             </div>

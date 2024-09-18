@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use App\Models\Requirement;
 use App\Models\RequirementDetail;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +19,7 @@ class RequirementsController extends Controller
      */
     public function index()
     {
-        $requirements = Requirement::with(['user', 'area'])->get();
+        $requirements = Requirement::with(['user', 'area', 'devUser'])->get();
         $objetc = Requirement::all();
         return view('requirement.index', ['objetc' => $objetc, 'requirements' => $requirements]);
     }
@@ -103,7 +104,10 @@ class RequirementsController extends Controller
     {
         $objetc = Requirement::find($id);
         $requirements = Requirement::with(['user', 'area', 'details'])->get();
-        return view('requirement.edit', ['objetc' => $objetc, 'requirements' => $requirements]);
+        $devUsers = User::role('Dev')->get();
+        // Obtener el rol del usuario
+        $currentUser = auth()->user();
+        return view('requirement.edit', ['objetc' => $objetc, 'requirements' => $requirements, 'devUsers' => $devUsers, 'currentUser' => $currentUser]);
     }
 
     /**
@@ -115,7 +119,25 @@ class RequirementsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            // Encuentra el requerimiento por ID
+            $requirement = Requirement::findOrFail($id);
+
+            if ($request->has('dev_user_id')) {
+                $requirement->dev_user_id = $request->dev_user_id;
+                $requirement->save();
+            }
+
+            DB::commit();
+            return redirect()->route('requerimientos.index', $id)
+                            ->with('mensaje', 'Desarrollador asignado con éxito.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('requerimientos.edit', $id)
+                            ->with('error', 'Error al asignar desarrollador. Inténtalo de nuevo.');
+        }
     }
 
     /**

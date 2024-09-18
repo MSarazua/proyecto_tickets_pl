@@ -27,6 +27,7 @@
                   <th>Área</th>
                   <th>Título del requerimiento</th>
                   <th>Prioridad</th>
+                  <th>Asignado a</th>
                   <th>Estado</th>
                   <th>Acciones</th>
                 </tr>
@@ -73,6 +74,19 @@
                             @endif
                         </div>
                       </div>                    
+                    </td>
+                    <td>
+                      @if ($item->devUser)
+                          <div class="d-flex align-items-center">
+                              <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="" class="mr-3">
+                              <div>
+                                  <h6>{{ $item->devUser->name }}</h6>
+                                  <p>Head admin</p>
+                              </div>
+                          </div>
+                      @else
+                          <p>No asignado</p>
+                      @endif
                     </td>
                     <td>
                       <div class="progress">
