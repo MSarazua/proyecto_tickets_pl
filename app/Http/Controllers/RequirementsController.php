@@ -103,7 +103,7 @@ class RequirementsController extends Controller
     public function edit($id)
     {
         $objetc = Requirement::find($id);
-        $requirements = Requirement::with(['user', 'area', 'details'])->get();
+        $requirements = Requirement::with(['user', 'area', 'details', 'devUser'])->get();
         $devUsers = User::role('Dev')->get();
         // Obtener el rol del usuario
         $currentUser = auth()->user();

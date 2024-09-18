@@ -109,17 +109,31 @@
                                     </tr>
                                     @if ($currentUser->hasRole('Admin'))
                                         <tr>
-                                            <th>Asignar tarea:</th>
+                                            @if ($objetc->devUser)
+                                                <th>Asignado a:</th>
+                                            @else    
+                                                <th>Asignar tarea:</th>
+                                            @endif
                                             <td>
-                                                <select name="dev_user_id" class="js-example-basic-single w-100">
-                                                    <option value="" disabled selected>Seleccione un desarrollador</option>
-                                                    @foreach ($devUsers as $user)
-                                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <button type="submit" class="btn btn-dark btn-icon-text text-light"> Asignar 
-                                                    <i class="ti-file btn-icon-append"></i>
-                                                </button>
+                                                @if ($objetc->devUser)
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="" class="mr-3">
+                                                        <div>
+                                                            <h6>{{ $objetc->devUser->name }}</h6>
+                                                            <p>Head admin</p>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <select name="dev_user_id" class="js-example-basic-single w-100">
+                                                        <option value="" disabled selected>Seleccione un desarrollador</option>
+                                                        @foreach ($devUsers as $user)
+                                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <button type="submit" class="btn btn-dark btn-icon-text text-light"> Asignar 
+                                                        <i class="ti-file btn-icon-append"></i>
+                                                    </button>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endif
