@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
 
 class RequirementsController extends Controller
 {
@@ -53,6 +54,7 @@ class RequirementsController extends Controller
             $requirement->priority = $request->priority;
             $requirement->description = $request->description;
             $requirement->references = $request->references;
+            $requirement->status = 0;
             $requirement->save();
 
             // Guarda archivos si existen
@@ -122,21 +124,27 @@ class RequirementsController extends Controller
         DB::beginTransaction();
 
         try {
-            // Encuentra el requerimiento por ID
             $requirement = Requirement::findOrFail($id);
+            $currentUser = auth()->user();
 
-            if ($request->has('dev_user_id')) {
-                $requirement->dev_user_id = $request->dev_user_id;
-                $requirement->save();
+            if ($currentUser->hasRole('Dev')) {
+                if ($request->has('status')) {
+                    $requirement->status = $request->status;
+                }
+            } elseif ($currentUser->hasRole('Admin')) {
+                if ($request->has('dev_user_id')) {
+                    $requirement->dev_user_id = $request->dev_user_id;
+                }
             }
+            $requirement->save();
 
             DB::commit();
             return redirect()->route('requerimientos.index', $id)
-                            ->with('mensaje', 'Desarrollador asignado con éxito.');
+                            ->with('mensaje', 'Actualización realizada con éxito.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('requerimientos.edit', $id)
-                            ->with('error', 'Error al asignar desarrollador. Inténtalo de nuevo.');
+             ->with('error', 'Error al actualizar. Inténtalo de nuevo.');
         }
     }
 

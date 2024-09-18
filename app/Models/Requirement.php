@@ -9,6 +9,16 @@ class Requirement extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'requirement_title',
+        'priority',
+        'description',
+        'references',
+        'user_id',
+        'dev_user_id',
+        'status',
+    ];
+
      // Relación con el modelo User (cliente)
     public function user()
     {

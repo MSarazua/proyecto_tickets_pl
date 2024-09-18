@@ -67,13 +67,13 @@
         <div class="header">
             <h1>DETALLE DEL REQUERIMIENTO</h1>
         </div>
-        <div class="form-section">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <form action="{{ route('requerimientos.update', $objetc->id) }}" method="POST">
-                            @csrf
-                            @method('PUT')
+        <form action="{{ route('requerimientos.update', $objetc->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="form-section">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
@@ -140,29 +140,51 @@
                                 </tbody>
                             </table>
                             <textarea style="width: 100%; height: 200px">{{ $objetc->description }}</textarea>
-                        </form>
+                            @if ($currentUser->hasRole('Dev'))
+                                <div class="mt-5">
+                                    <p class="card-description">Status </p>
+                                    <div class="form-check">
+                                    <label class="form-check-label">
+                                    <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="0"> Pendiente <i class="input-helper"></i></label>
+                                    </div>
+                                    <div class="form-check">
+                                    <label class="form-check-label">
+                                    <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="1" checked=""> En progreso <i class="input-helper"></i></label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                        <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="2" checked=""> Finalizado <i class="input-helper"></i></label>
+                                    </div>
+                                </div>       
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-dark btn-icon-text text-light"> Actualizar status
+                                        <i class="ti-file btn-icon-append"></i>
+                                    </button>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- Divider line -->
-            <div class="divider"></div>
+                <!-- Divider line -->
+                <div class="divider"></div>
 
-            <!-- Files Section -->
-            <div class="files-section">
-                <h3>Archivos del requerimiento</h3>
-                <ul class="file-list">
-                    @forelse ($objetc->details as $detail)
-                        <li>
-                            <a href="{{ asset('storage/' . $detail->files) }}" download>
-                                {{ basename($detail->files) }}
-                            </a>
-                        </li>
-                    @empty
-                        <li>No hay archivos asociados a este requerimiento.</li>
-                    @endforelse
-                </ul>
+                <!-- Files Section -->
+                <div class="files-section">
+                    <h3>Archivos del requerimiento</h3>
+                    <ul class="file-list">
+                        @forelse ($objetc->details as $detail)
+                            <li>
+                                <a href="{{ asset('storage/' . $detail->files) }}" download>
+                                    {{ basename($detail->files) }}
+                                </a>
+                            </li>
+                        @empty
+                            <li>No hay archivos asociados a este requerimiento.</li>
+                        @endforelse
+                    </ul>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 
     <!-- Bootstrap JS -->
