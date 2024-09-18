@@ -9,15 +9,26 @@ class Requirement extends Model
 {
     use HasFactory;
 
-    // Relación con el modelo User
+     // Relación con el modelo User (cliente)
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     // Relación con el modelo Área
     public function area()
     {
         return $this->belongsTo(Area::class);
+    }
+
+    // Relación con el modelo User (dev)
+    public function devUser()
+    {
+        return $this->belongsTo(User::class, 'dev_user_id');
+    }
+
+    public function details()
+    {
+        return $this->hasMany(RequirementDetail::class);
     }
 }

@@ -54,13 +54,19 @@ class RequirementsController extends Controller
             $requirement->references = $request->references;
             $requirement->save();
 
+            // Guarda archivos si existen
             if ($request->hasFile('files')) {
                 $files = $request->file('files');
 
                 foreach ($files as $file) {
                     $requirement_detail = new RequirementDetail;
                     $requirement_detail->requirement_id = $requirement->id;
-                    $requirement_detail->files = $file->store('public');
+
+                    // Usa el nombre original del archivo
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $filePath = $file->storeAs('files', $filename, 'public');
+                    
+                    $requirement_detail->files = $filePath;
                     $requirement_detail->save();
                 }
             }
@@ -95,7 +101,9 @@ class RequirementsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $objetc = Requirement::find($id);
+        $requirements = Requirement::with(['user', 'area', 'details'])->get();
+        return view('requirement.edit', ['objetc' => $objetc, 'requirements' => $requirements]);
     }
 
     /**

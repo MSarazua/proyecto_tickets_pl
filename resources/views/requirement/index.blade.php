@@ -28,6 +28,7 @@
                   <th>Título del requerimiento</th>
                   <th>Prioridad</th>
                   <th>Estado</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -61,15 +62,32 @@
                       </div>
                     </td>
                     <td>
-                      <div class="d-flex ">
+                      <div class="d-flex">
                         <div>
-                          <h6>{{ $item->priority }}</h6>
-                          <p>Head admin</p>
+                            @if ($item->priority == 0)
+                                <div class="badge badge-opacity-danger">Alta</div>
+                            @elseif ($item->priority == 1)
+                                <div class="badge badge-opacity-warning">Media</div>
+                            @elseif ($item->priority == 2)
+                                <div class="badge badge-opacity-success">Baja</div>  
+                            @endif
                         </div>
+                      </div>                    
+                    </td>
+                    <td>
+                      <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
                     </td>
                     <td>
-                      <div class="badge badge-opacity-warning">In progress</div>
+                      <div class="template-demo d-flex justify-content-between flex-nowrap">
+                        <button type="button" class="btn btn-inverse-primary btn-icon">
+                          <i class="ti-home"></i>
+                        </button>
+                        <a href="{{ route('requerimientos.edit', $item->id) }}" title="Detalle" type="button" class="btn btn-inverse-dark btn-icon">
+                          <i class="fa fa-edit"></i>
+                        </a>
+                     </div>
                     </td>
                   </tr>
                 @endforeach

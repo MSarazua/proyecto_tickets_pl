@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class RequirementDetail extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['requirement_id', 'files'];
+
+    public function requirement()
+    {
+        return $this->belongsTo(Requirement::class);
+    }
 }

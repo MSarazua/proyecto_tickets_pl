@@ -22,6 +22,13 @@ class UserSeeder extends Seeder
             'area_id' => 1
         ])->assignRole("Admin");
 
+        User::create([
+            "name" => "Luis Arroyo",
+            "email" => "larroyo@gmail.com",
+            "password" => bcrypt("12345678"),
+            'area_id' => 1
+        ])->assignRole("Dev");
+
         User::factory(9)->create();
     }
 }
