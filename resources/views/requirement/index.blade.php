@@ -27,7 +27,9 @@
                   <th>Área</th>
                   <th>Título del requerimiento</th>
                   <th>Prioridad</th>
-                  <th>Asignado a</th>
+                  @if ($currentUser->hasRole('Admin'))
+                    <th>Asignado a</th>
+                  @endif  
                   <th>Estado</th>
                   <th>Acciones</th>
                 </tr>
@@ -75,19 +77,21 @@
                         </div>
                       </div>                    
                     </td>
-                    <td>
-                      @if ($item->devUser)
-                          <div class="d-flex align-items-center">
-                              <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="" class="mr-3">
-                              <div>
-                                  <h6>{{ $item->devUser->name }}</h6>
-                                  <p>Head admin</p>
-                              </div>
-                          </div>
-                      @else
-                          <p>No asignado</p>
-                      @endif
-                    </td>
+                    @if ($currentUser->hasRole('Admin'))
+                      <td>
+                        @if ($item->devUser)
+                            <div class="d-flex align-items-center">
+                                <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="" class="mr-3">
+                                <div>
+                                    <h6>{{ $item->devUser->name }}</h6>
+                                    <p>Head admin</p>
+                                </div>
+                            </div>
+                        @else
+                            <p>No asignado</p>
+                        @endif
+                      </td>
+                    @endif
                     <td>
                       <div class="progress">
                         @if ($item->status == 0)
@@ -101,13 +105,10 @@
                     </td>
                     <td>
                       <div class="template-demo d-flex justify-content-between flex-nowrap">
-                        <button type="button" class="btn btn-inverse-primary btn-icon">
-                          <i class="ti-home"></i>
-                        </button>
                         <a href="{{ route('requerimientos.edit', $item->id) }}" title="Detalle" type="button" class="btn btn-inverse-dark btn-icon">
                           <i class="fa fa-edit"></i>
                         </a>
-                     </div>
+                    </div>
                     </td>
                   </tr>
                 @endforeach

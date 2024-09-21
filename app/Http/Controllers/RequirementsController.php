@@ -21,8 +21,21 @@ class RequirementsController extends Controller
     public function index()
     {
         $requirements = Requirement::with(['user', 'area', 'devUser'])->get();
-        $objetc = Requirement::all();
-        return view('requirement.index', ['objetc' => $objetc, 'requirements' => $requirements]);
+        $currentUser = auth()->user();
+
+        if ($currentUser->hasRole('Admin')) {
+            $objetc = Requirement::all();
+        } elseif ($currentUser->hasRole('Dev')) {
+            $objetc = Requirement::where('dev_user_id', $currentUser->id)->get();
+        } else {
+            $objetc = collect();
+        }
+
+        return view('requirement.index', [
+            'objetc' => $objetc,
+            'requirements' => $requirements,
+            'currentUser' => $currentUser
+        ]);
     }
 
     /**

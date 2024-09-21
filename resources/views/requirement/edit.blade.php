@@ -117,12 +117,21 @@
                                             <td>
                                                 @if ($objetc->devUser)
                                                     <div class="d-flex align-items-center">
-                                                        <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="" class="mr-3">
                                                         <div>
                                                             <h6>{{ $objetc->devUser->name }}</h6>
-                                                            <p>Head admin</p>
+                                                            <p>Desarrollador</p>
                                                         </div>
                                                     </div>
+                                                    <select name="dev_user_id" class="js-example-basic-single w-100">
+                                                        <option value="" disabled selected>Cambiar desarrollador</option>
+                                                        @foreach ($devUsers as $user)
+                                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <button type="submit" class="btn btn-dark btn-icon-text text-light mt-2">
+                                                        Asignar nuevo
+                                                        <i class="ti-reload btn-icon-append"></i>
+                                                    </button>
                                                 @else
                                                     <select name="dev_user_id" class="js-example-basic-single w-100">
                                                         <option value="" disabled selected>Seleccione un desarrollador</option>
