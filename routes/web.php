@@ -11,3 +11,4 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::resource('requerimientos', RequirementsController::class);
+Route::get('tablero', [RequirementsController::class, 'tablero'])->name('tablero');

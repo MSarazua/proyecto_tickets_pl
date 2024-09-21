@@ -171,4 +171,24 @@ class RequirementsController extends Controller
     {
         //
     }
+
+    public function tablero()
+    {
+        $requirements = Requirement::with(['user', 'area', 'devUser'])->get();
+        $currentUser = auth()->user();
+
+        if ($currentUser->hasRole('Admin')) {
+            $objetc = Requirement::all();
+        } elseif ($currentUser->hasRole('Dev')) {
+            $objetc = Requirement::where('dev_user_id', $currentUser->id)->get();
+        } else {
+            $objetc = collect();
+        }
+
+        return view('requirement.tablero', [
+            'objetc' => $objetc,
+            'requirements' => $requirements,
+            'currentUser' => $currentUser
+        ]);
+    }
 }
