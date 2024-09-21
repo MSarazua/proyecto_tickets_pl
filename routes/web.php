@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AreasController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\PagesController;
@@ -12,3 +13,4 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::resource('requerimientos', RequirementsController::class);
 Route::get('tablero', [RequirementsController::class, 'tablero'])->name('tablero');
+Route::resource('areas', AreasController::class);
