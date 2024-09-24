@@ -15,7 +15,8 @@ class AreasController extends Controller
      */
     public function index()
     {
-        //
+        $object = Area::all();
+        return view('areas.index', ['object' => $object]);
     }
 
     /**
