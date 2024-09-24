@@ -18,7 +18,9 @@ Route::group(['middleware' => ['role:Admin']], function () {
     Route::resource('areas', AreasController::class);
 });
 
-Route::group(['middleware' => ['role:Admin']], function () {
+Route::group(['middleware' => ['role:Admin|Dev']], function () {
     Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('register', [RegisterController::class, 'register']);
 });
+
+Route::post('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');

@@ -4,18 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 use App\Models\Area;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
-    use RegistersUsers;
-
-    protected $redirectTo = '/home';
-
     public function __construct()
     {
         $this->middleware('auth');
@@ -52,5 +48,12 @@ class RegisterController extends Controller
 
         return $user;
     }
-}
 
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        $user = $this->create($request->all());
+        return redirect()->route('home')->with('success', 'Usuario registrado exitosamente.');
+    }
+}
