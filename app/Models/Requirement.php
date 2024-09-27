@@ -41,4 +41,8 @@ class Requirement extends Model
     {
         return $this->hasMany(RequirementDetail::class);
     }
+
+    public function logs() {
+        return $this->hasMany(TicketLog::class);
+    }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use App\Models\Requirement;
 use App\Models\RequirementDetail;
+use App\Models\TicketLog;
+use App\Models\TicketLogDetail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -117,12 +119,19 @@ class RequirementsController extends Controller
      */
     public function edit($id)
     {
-        $objetc = Requirement::find($id);
-        $requirements = Requirement::with(['user', 'area', 'details', 'devUser'])->get();
+        $objetc = Requirement::with(['user', 'area', 'details', 'devUser'])->findOrFail($id);
+        $logs = TicketLog::where('requirement_id', $id)->with('user')->get();
+        $ticketLogDetails = TicketLogDetail::whereIn('ticket_id', $logs->pluck('id'))->get(); 
         $devUsers = User::role('Dev')->get();
-        // Obtener el rol del usuario
         $currentUser = auth()->user();
-        return view('requirement.edit', ['objetc' => $objetc, 'requirements' => $requirements, 'devUsers' => $devUsers, 'currentUser' => $currentUser]);
+        
+        return view('requirement.edit', [
+            'objetc' => $objetc,
+            'logs' => $logs,
+            'ticketLogDetails' => $ticketLogDetails,
+            'devUsers' => $devUsers,
+            'currentUser' => $currentUser
+        ]);
     }
 
     /**
@@ -135,31 +144,84 @@ class RequirementsController extends Controller
     public function update(Request $request, $id)
     {
         DB::beginTransaction();
-
+        
         try {
             $requirement = Requirement::findOrFail($id);
             $currentUser = auth()->user();
-
+    
             if ($currentUser->hasRole('Dev')) {
-                if ($request->has('status')) {
+                if ($request->has('status') && $requirement->status !== $request->status) {
                     $requirement->status = $request->status;
-                }
-            } elseif ($currentUser->hasRole('Admin')) {
-                if ($request->has('dev_user_id')) {
-                    $requirement->dev_user_id = $request->dev_user_id;
+                    TicketLog::create([
+                        'requirement_id' => $requirement->id,
+                        'user_id' => $currentUser->id,
+                        'action' => 'Cambio de estado',
+                        'description' => 'El estado cambió de ' . $requirement->getOriginal('status') . ' a ' . $request->status,
+                    ]);
                 }
             }
-            $requirement->save();
+    
+            if ($currentUser->hasRole('Admin')) {
+                if ($request->has('dev_user_id') && $requirement->dev_user_id !== $request->dev_user_id) {
+                    $requirement->dev_user_id = $request->dev_user_id;
+                    TicketLog::create([
+                        'requirement_id' => $requirement->id,
+                        'user_id' => $currentUser->id,
+                        'action' => 'Cambio de asignación',
+                        'description' => 'El desarrollador asignado cambió a ' . User::find($request->dev_user_id)->name,
+                    ]);
+                }
+            }
+    
+            if ($request->has('logs')) {
+                foreach ($request->logs as $logId => $logData) {
+                    $log = TicketLog::findOrFail($logId);
+                    
+                    // Actualizar la descripción del log
+                    if (isset($logData['description'])) {
+                        $log->description = $logData['description'];
+                        $log->save();
+                    }
+                }
+            }
+    
+            if ($request->has('new_log')) {
+                $newLog = TicketLog::create([
+                    'requirement_id' => $requirement->id,
+                    'user_id' => $currentUser->id,
+                    'action' => 'Nuevo log',
+                    'description' => $request->new_log['description'],
+                ]);
 
+                if ($request->hasFile('files')) {
+                    $files = $request->file('files');
+
+                    foreach ($files as $file) {
+                        $ticket_detail = new TicketLogDetail;
+                        $ticket_detail->ticket_id = $newLog->id;
+                        $filename = time() . '_' . $file->getClientOriginalName();
+                        $filePath = $file->storeAs('files', $filename, 'public');
+                        
+                        $ticket_detail->files = $filePath;
+                        $ticket_detail->save();
+                    }
+                }
+            }
+    
+            // Guardar cambios en el requerimiento
+            $requirement->save();
             DB::commit();
+    
             return redirect()->route('requerimientos.index', $id)
-                            ->with('mensaje', 'Actualización realizada con éxito.');
+                             ->with('mensaje', 'Actualización realizada con éxito.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('requerimientos.edit', $id)
-             ->with('error', 'Error al actualizar. Inténtalo de nuevo.');
+                             ->with('error', 'Error al actualizar. Inténtalo de nuevo.');
         }
     }
+    
+    
 
     /**
      * Remove the specified resource from storage.

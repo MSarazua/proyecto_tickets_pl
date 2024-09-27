@@ -60,6 +60,13 @@
         .file-list li a:hover {
             text-decoration: underline;
         }
+        .btn-social-icon-text-edit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            min-height: 44px;
+        }
     </style>
 </head>
 <body>
@@ -67,7 +74,7 @@
         <div class="header">
             <h1>DETALLE DEL REQUERIMIENTO</h1>
         </div>
-        <form action="{{ route('requerimientos.update', $objetc->id) }}" method="POST">
+        <form action="{{ route('requerimientos.update', $objetc->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="form-section">
@@ -192,6 +199,63 @@
                         @endforelse
                     </ul>
                 </div>
+                <div class="logs-section mt-4">
+                    <h3>Historial de Logs</h3>
+                    <ul class="list-group">
+                        @forelse ($logs as $log) <!-- Cambiado de $ticket->logs a $logs -->
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <span><strong>{{ $log->user->name }}:</strong> {{ $log->description }}</span>
+                                    <span>{{ $log->created_at->format('d/m/Y H:i') }}</span>
+                                </div>
+                
+                                <!-- Edición de descripción -->
+                                <textarea name="logs[{{ $log->id }}][description]" class="form-control mt-2">{{ $log->description }}</textarea>
+                
+                                <div class="files-section">
+                                    <h5>Archivos asociados</h5>
+                                    <ul class="file-list">
+                                        @php $hasFiles = false; @endphp
+                                        @foreach ($ticketLogDetails as $detail)
+                                            @if ($detail->ticket_id == $log->id)
+                                                <li>
+                                                    <a href="{{ asset('storage/' . $detail->files) }}" download>
+                                                        {{ basename($detail->files) }}
+                                                    </a>
+                                                </li>
+                                                @php $hasFiles = true; @endphp
+                                            @endif
+                                        @endforeach
+
+                                        @if (!$hasFiles)
+                                            <li>No hay archivos asociados a este requerimiento.</li>
+                                        @endif
+                                    </ul>
+                                </div>
+                            </li>
+                        @empty
+                            <li class="list-group-item">No hay logs registrados.</li>
+                        @endforelse
+                    </ul>
+                </div>
+                <div class="container mt-5">
+                    <h5>Responder >></h5>
+                    <textarea name="new_log[description]" class="form-control" placeholder="Escribe una descripción..."></textarea>
+                    <div id="fileInputsContainer" class="mb-3">
+                        <div class="input-group mb-3">
+                            <input name="files[]" type="file" class="form-control">
+                        </div>
+                    </div>
+                    <div class="template-demo">
+                        <button type="button" class="btn-social-icon-text-edit  text-light btn btn-social-icon-text btn-youtube" id="addFileButton">
+                            <i class="ti-plus text-light"></i> Agregar archivo
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-dark">Actualizar Ticket</button>
+                </div>
             </div>
         </form>
     </div>
@@ -200,4 +264,41 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+<script>
+    document.getElementById('addFileButton').addEventListener('click', function() {
+        var container = document.getElementById('fileInputsContainer');
+        
+        // Crea un nuevo div para el input de archivo y el botón de eliminación
+        var newDiv = document.createElement('div');
+        newDiv.classList.add('input-group', 'mb-3');
+
+        // Crea el nuevo input de archivo
+        var newInput = document.createElement('input');
+        newInput.name = 'files[]'; // Usa un nombre de array para manejar múltiples archivos en el servidor
+        newInput.type = 'file';
+        newInput.classList.add('form-control');
+        
+        // Crea el botón de eliminación
+        var removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'remove-file-btn');
+        removeButton.textContent = 'Eliminar';
+
+        // Añade el input y el botón al nuevo div
+        newDiv.appendChild(newInput);
+        newDiv.appendChild(removeButton);
+        
+        // Añade el nuevo div al contenedor
+        container.appendChild(newDiv);
+    });
+
+    document.getElementById('fileInputsContainer').addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove-file-btn')) {
+            var divToRemove = event.target.parentElement;
+            divToRemove.remove(); // Elimina el div contenedor del input y el botón de eliminación
+        }
+    });
+</script>
 @endsection
+
