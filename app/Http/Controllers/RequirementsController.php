@@ -152,14 +152,43 @@ class RequirementsController extends Controller
             if ($currentUser->hasRole('Dev')) {
                 if ($request->has('status') && $requirement->status !== $request->status) {
                     $requirement->status = $request->status;
+            
+                    switch ($requirement->getOriginal('status')) {
+                        case 0:
+                            $originalStatus = 'Pendiente';
+                            break;
+                        case 1:
+                            $originalStatus = 'En progreso';
+                            break;
+                        case 2:
+                            $originalStatus = 'Finalizado';
+                            break;
+                        default:
+                            $originalStatus = 'Desconocido';
+                    }
+                    switch ($request->status) {
+                        case 0:
+                            $newStatus = 'Pendiente';
+                            break;
+                        case 1:
+                            $newStatus = 'En progreso';
+                            break;
+                        case 2:
+                            $newStatus = 'Finalizado';
+                            break;
+                        default:
+                            $newStatus = 'Desconocido'; 
+                    }
+            
                     TicketLog::create([
                         'requirement_id' => $requirement->id,
                         'user_id' => $currentUser->id,
                         'action' => 'Cambio de estado',
-                        'description' => 'El estado cambió de ' . $requirement->getOriginal('status') . ' a ' . $request->status,
+                        'description' => 'El estado cambió de ' . $originalStatus . ' a ' . $newStatus,
                     ]);
                 }
             }
+            
     
             if ($currentUser->hasRole('Admin')) {
                 if ($request->has('dev_user_id') && $requirement->dev_user_id !== $request->dev_user_id) {
