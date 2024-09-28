@@ -159,18 +159,46 @@
                             @if ($currentUser->hasRole('Dev'))
                                 <div class="mt-5">
                                     <p class="card-description">Status </p>
-                                    <div class="form-check">
-                                    <label class="form-check-label">
-                                    <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="0"> Pendiente <i class="input-helper"></i></label>
-                                    </div>
-                                    <div class="form-check">
-                                    <label class="form-check-label">
-                                    <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="1" checked=""> En progreso <i class="input-helper"></i></label>
-                                    </div>
-                                    <div class="form-check">
-                                        <label class="form-check-label">
-                                        <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="2" checked=""> Finalizado <i class="input-helper"></i></label>
-                                    </div>
+                                    @if ($objetc->status == 0)
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                            <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="0" checked=""> Pendiente <i class="input-helper"></i></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                            <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="1"> En progreso <i class="input-helper"></i></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                            <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="2"> Finalizado <i class="input-helper"></i></label>
+                                        </div>
+                                    @elseif ($objetc->status == 1)
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                            <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="0"> Pendiente <i class="input-helper"></i></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                            <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="1" checked=""> En progreso <i class="input-helper"></i></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                            <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="2"> Finalizado <i class="input-helper"></i></label>
+                                        </div>
+                                    @elseif ($objetc->status == 2)
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                            <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="0"> Pendiente <i class="input-helper"></i></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                            <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="1"> En progreso <i class="input-helper"></i></label>
+                                        </div>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                            <input name="status" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="2" checked=""> Finalizado <i class="input-helper"></i></label>
+                                        </div>
+                                    @endif
                                 </div>       
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-dark btn-icon-text text-light"> Actualizar status
@@ -201,43 +229,51 @@
                 </div>
                 <div class="logs-section mt-4">
                     <h3>Historial de Logs</h3>
-                    <ul class="list-group">
-                        @forelse ($logs as $log) <!-- Cambiado de $ticket->logs a $logs -->
-                            <li class="list-group-item">
-                                <div class="d-flex justify-content-between">
-                                    <span><strong>{{ $log->user->name }}:</strong> {{ $log->description }}</span>
-                                    <span>{{ $log->created_at->format('d/m/Y H:i') }}</span>
-                                </div>
+                    <div class="accordion" id="logsAccordion">
+                        @forelse ($logs as $log)
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading{{ $log->id }}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $log->id }}" aria-expanded="false" aria-controls="collapse{{ $log->id }}">
+                                        <strong>{{ $log->user->name }}:</strong> {{ Str::limit($log->description, 50) }} <!-- Mostrar solo una parte de la descripción -->
+                                    </button>
+                                </h2>
+                                <div id="collapse{{ $log->id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $log->id }}" data-bs-parent="#logsAccordion">
+                                    <div class="accordion-body">
+                                        <div class="d-flex justify-content-between">
+                                            <span><strong>Fecha:</strong> {{ $log->created_at->format('d/m/Y H:i') }}</span>
+                                        </div>
                 
-                                <!-- Edición de descripción -->
-                                <textarea name="logs[{{ $log->id }}][description]" class="form-control mt-2">{{ $log->description }}</textarea>
+                                        <!-- Edición de descripción -->
+                                        <textarea name="logs[{{ $log->id }}][description]" class="form-control mt-2">{{ $log->description }}</textarea>
                 
-                                <div class="files-section">
-                                    <h5>Archivos asociados</h5>
-                                    <ul class="file-list">
-                                        @php $hasFiles = false; @endphp
-                                        @foreach ($ticketLogDetails as $detail)
-                                            @if ($detail->ticket_id == $log->id)
-                                                <li>
-                                                    <a href="{{ asset('storage/' . $detail->files) }}" download>
-                                                        {{ basename($detail->files) }}
-                                                    </a>
-                                                </li>
-                                                @php $hasFiles = true; @endphp
-                                            @endif
-                                        @endforeach
-
-                                        @if (!$hasFiles)
-                                            <li>No hay archivos asociados a este requerimiento.</li>
-                                        @endif
-                                    </ul>
+                                        <div class="files-section mt-3">
+                                            <h5>Archivos asociados</h5>
+                                            <ul class="file-list">
+                                                @php $hasFiles = false; @endphp
+                                                @foreach ($ticketLogDetails as $detail)
+                                                    @if ($detail->ticket_id == $log->id)
+                                                        <li>
+                                                            <a href="{{ asset('storage/' . $detail->files) }}" download>
+                                                                {{ basename($detail->files) }}
+                                                            </a>
+                                                        </li>
+                                                        @php $hasFiles = true; @endphp
+                                                    @endif
+                                                @endforeach
+                
+                                                @if (!$hasFiles)
+                                                    <li>No hay archivos asociados a este requerimiento.</li>
+                                                @endif
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
-                            </li>
+                            </div>
                         @empty
-                            <li class="list-group-item">No hay logs registrados.</li>
+                            <p>No hay logs registrados.</p>
                         @endforelse
-                    </ul>
-                </div>
+                    </div>
+                </div>                
                 <div class="container mt-5">
                     <h5>Responder >></h5>
                     <textarea name="new_log[description]" class="form-control" placeholder="Escribe una descripción..."></textarea>

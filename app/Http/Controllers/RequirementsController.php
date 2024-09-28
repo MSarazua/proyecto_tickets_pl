@@ -148,83 +148,68 @@ class RequirementsController extends Controller
         try {
             $requirement = Requirement::findOrFail($id);
             $currentUser = auth()->user();
-    
+            $logInserted = false;
+            
             if ($currentUser->hasRole('Dev')) {
                 if ($request->has('status') && $requirement->status !== $request->status) {
                     $requirement->status = $request->status;
-            
-                    switch ($requirement->getOriginal('status')) {
-                        case 0:
-                            $originalStatus = 'Pendiente';
-                            break;
-                        case 1:
-                            $originalStatus = 'En progreso';
-                            break;
-                        case 2:
-                            $originalStatus = 'Finalizado';
-                            break;
-                        default:
-                            $originalStatus = 'Desconocido';
+                    
+                    $originalStatus = $this->getStatusName($requirement->getOriginal('status'));
+                    $newStatus = $this->getStatusName($request->status);
+                    
+                    $description = 'El estado cambió de ' . $originalStatus . ' a ' . $newStatus;
+
+                    if (!empty($request->description)) {
+                        $description .= '. ' . trim($request->description);
                     }
-                    switch ($request->status) {
-                        case 0:
-                            $newStatus = 'Pendiente';
-                            break;
-                        case 1:
-                            $newStatus = 'En progreso';
-                            break;
-                        case 2:
-                            $newStatus = 'Finalizado';
-                            break;
-                        default:
-                            $newStatus = 'Desconocido'; 
+
+                    if (!empty(trim($description)) && !$logInserted) {
+                        TicketLog::create([
+                            'requirement_id' => $requirement->id,
+                            'user_id' => $currentUser->id,
+                            'action' => 'Cambio de estado',
+                            'description' => $description,
+                        ]);
+                        $logInserted = true;
                     }
-            
-                    TicketLog::create([
-                        'requirement_id' => $requirement->id,
-                        'user_id' => $currentUser->id,
-                        'action' => 'Cambio de estado',
-                        'description' => 'El estado cambió de ' . $originalStatus . ' a ' . $newStatus,
-                    ]);
                 }
             }
-            
-    
+
             if ($currentUser->hasRole('Admin')) {
                 if ($request->has('dev_user_id') && $requirement->dev_user_id !== $request->dev_user_id) {
                     $requirement->dev_user_id = $request->dev_user_id;
-                    TicketLog::create([
-                        'requirement_id' => $requirement->id,
-                        'user_id' => $currentUser->id,
-                        'action' => 'Cambio de asignación',
-                        'description' => 'El desarrollador asignado cambió a ' . User::find($request->dev_user_id)->name,
-                    ]);
+                    if (!$logInserted) {
+                        TicketLog::create([
+                            'requirement_id' => $requirement->id,
+                            'user_id' => $currentUser->id,
+                            'action' => 'Cambio de asignación',
+                            'description' => 'El desarrollador asignado cambió a ' . User::find($request->dev_user_id)->name,
+                        ]);
+                        $logInserted = true;
+                    }
                 }
             }
-    
+
             if ($request->has('logs')) {
                 foreach ($request->logs as $logId => $logData) {
                     $log = TicketLog::findOrFail($logId);
-                    
-                    // Actualizar la descripción del log
-                    if (isset($logData['description'])) {
-                        $log->description = $logData['description'];
+                    if (isset($logData['description']) && !empty(trim($logData['description']))) {
+                        $log->description = trim($logData['description']);
                         $log->save();
                     }
                 }
             }
-    
-            if ($request->has('new_log')) {
+
+            if ($request->has('new_log') && !empty(trim($request->new_log['description']))) {
                 $newLog = TicketLog::create([
                     'requirement_id' => $requirement->id,
                     'user_id' => $currentUser->id,
                     'action' => 'Nuevo log',
-                    'description' => $request->new_log['description'],
+                    'description' => trim($request->new_log['description']),
                 ]);
 
                 if ($request->hasFile('files')) {
                     $files = $request->file('files');
-
                     foreach ($files as $file) {
                         $ticket_detail = new TicketLogDetail;
                         $ticket_detail->ticket_id = $newLog->id;
@@ -236,21 +221,31 @@ class RequirementsController extends Controller
                     }
                 }
             }
-    
-            // Guardar cambios en el requerimiento
             $requirement->save();
             DB::commit();
-    
+
             return redirect()->route('requerimientos.index', $id)
-                             ->with('mensaje', 'Actualización realizada con éxito.');
+                            ->with('mensaje', 'Actualización realizada con éxito.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('requerimientos.edit', $id)
-                             ->with('error', 'Error al actualizar. Inténtalo de nuevo.');
+                            ->with('error', 'Error al actualizar. Inténtalo de nuevo.');
         }
     }
-    
-    
+
+    private function getStatusName($status)
+    {
+        switch ($status) {
+            case 0:
+                return 'Pendiente';
+            case 1:
+                return 'En progreso';
+            case 2:
+                return 'Finalizado';
+            default:
+                return 'Desconocido';
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
