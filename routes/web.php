@@ -12,13 +12,16 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::resource('requerimientos', RequirementsController::class);
-Route::get('tablero', [RequirementsController::class, 'tablero'])->name('tablero');
-Route::group(['middleware' => ['role:Admin']], function () {
+Route::middleware(['auth'])->group(function () {
+    Route::resource('requerimientos', RequirementsController::class);
+    Route::get('tablero', [RequirementsController::class, 'tablero'])->name('tablero');
+});
+
+Route::group(['middleware' => ['auth', 'role:Admin']], function () {
     Route::resource('areas', AreasController::class);
 });
 
-Route::group(['middleware' => ['role:Admin|Dev']], function () {
+Route::group(['middleware' => ['auth', 'role:Admin|Dev']], function () {
     Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('register', [RegisterController::class, 'register']);
 });

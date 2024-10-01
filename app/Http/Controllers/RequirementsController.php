@@ -29,6 +29,8 @@ class RequirementsController extends Controller
             $objetc = Requirement::all();
         } elseif ($currentUser->hasRole('Dev')) {
             $objetc = Requirement::where('dev_user_id', $currentUser->id)->get();
+        } elseif ($currentUser->hasRole('User')) {
+            $objetc = Requirement::where('user_id', $currentUser->id)->get();
         } else {
             $objetc = collect();
         }

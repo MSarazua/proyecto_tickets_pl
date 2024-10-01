@@ -2,6 +2,7 @@
 @section('content')
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
             background-color: #f5f5f5;
@@ -214,7 +215,7 @@
 
                 <!-- Files Section -->
                 <div class="files-section">
-                    <h3>Archivos del requerimiento</h3>
+                    <h5>Archivos del requerimiento</h5>
                     <ul class="file-list">
                         @forelse ($objetc->details as $detail)
                             <li>
@@ -228,7 +229,7 @@
                     </ul>
                 </div>
                 <div class="logs-section mt-4">
-                    <h3>Historial de Logs</h3>
+                    <h5>Historial</h5>
                     <div class="accordion" id="logsAccordion">
                         @forelse ($logs as $log)
                             <div class="accordion-item">
