@@ -8,6 +8,7 @@ use App\Http\Controllers\RequirementsController;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\ReportsController;
 
 Auth::routes();
 
@@ -21,6 +22,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::group(['middleware' => ['auth', 'role:Admin']], function () {
     Route::resource('areas', AreasController::class);
+    Route::resource('reportes', ReportsController::class);
 });
 
 Route::group(['middleware' => ['auth', 'role:Admin|Dev']], function () {
