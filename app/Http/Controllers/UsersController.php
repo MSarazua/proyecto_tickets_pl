@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
+
 
 class UsersController extends Controller
 {
@@ -16,9 +18,14 @@ class UsersController extends Controller
     public function index()
     {
         $authenticatedUser = auth()->user();
-        $objetc = User::with(['area'])->findOrFail($authenticatedUser->id);
-        return view('users.profile', compact('authenticatedUser', 'objetc'));
+        if ($authenticatedUser->hasRole('Dev') || $authenticatedUser->hasRole('Admin')) {
+            $users = User::with(['area'])->get();
+            return view('users.index', compact('users'));
+        } else {
+            return redirect()->route('home')->with('error', 'No tienes permiso para ver esta página.');
+        }
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -49,7 +56,9 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        
+        $authenticatedUser = auth()->user();
+        $objetc = User::with(['area'])->findOrFail($authenticatedUser->id);
+        return view('users.profile', compact('authenticatedUser', 'objetc'));
     }
 
     /**

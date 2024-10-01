@@ -224,7 +224,7 @@
                   <p class="mb-1 mt-3 fw-semibold">{{ auth()->user()->name }}</p>
                   <p class="fw-light text-muted mb-0">{{ auth()->user()->email }}</p>
                 </div>
-                <a href="{{ url('usuario') }}" class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> Mi Perfil <span class="badge badge-pill badge-danger">1</span></a>
+                <a href="{{ url('usuario/show') }}" class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> Mi Perfil <span class="badge badge-pill badge-danger">1</span></a>
                 <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
                 <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
                 <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a>
@@ -257,6 +257,19 @@
             </li>
             <li class="nav-item nav-category">UI Elements</li>
             <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#users" aria-expanded="false" aria-controls="charts">
+                <i class="menu-icon mdi mdi-account-outline"></i>
+                <span class="menu-title">Usuarios</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="users">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="{{ url('usuario') }}">Listado</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{{ route('register') }}">Agregar</a></li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                 <i class="menu-icon mdi mdi-floor-plan"></i>
                 <span class="menu-title">Requerimientos</span>
@@ -282,18 +295,6 @@
                   <li class="nav-item">
                     <a type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link">Agregar</a>
                   </li>
-                </ul>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
-                <i class="menu-icon mdi mdi-chart-line"></i>
-                <span class="menu-title">Charts</span>
-                <i class="menu-arrow"></i>
-              </a>
-              <div class="collapse" id="charts">
-                <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">ChartJs</a></li>
                 </ul>
               </div>
             </li>
@@ -453,6 +454,7 @@
       $(document).ready(function() {
           $('#areasTable').DataTable();
           $('#requirementTable').DataTable();
+          $('#userTable').DataTable();
       });
     </script>  
   </body>
