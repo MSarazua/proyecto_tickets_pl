@@ -14,7 +14,7 @@
             </div>
           </div>
           <div class="table-responsive  mt-1">
-            <table class="table select-table">
+            <table id="requirementTable" class="table table-striped table-bordered">
               <thead>
                 <tr>
                   <th>

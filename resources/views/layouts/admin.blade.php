@@ -224,7 +224,7 @@
                   <p class="mb-1 mt-3 fw-semibold">{{ auth()->user()->name }}</p>
                   <p class="fw-light text-muted mb-0">{{ auth()->user()->email }}</p>
                 </div>
-                <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile <span class="badge badge-pill badge-danger">1</span></a>
+                <a href="{{ url('usuario') }}" class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> Mi Perfil <span class="badge badge-pill badge-danger">1</span></a>
                 <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-message-text-outline text-primary me-2"></i> Messages</a>
                 <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-calendar-check-outline text-primary me-2"></i> Activity</a>
                 <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-help-circle-outline text-primary me-2"></i> FAQ</a>
@@ -278,8 +278,9 @@
               </a>
               <div class="collapse" id="form-elements">
                 <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="{{ url('areas') }}">Listado</a></li>
                   <li class="nav-item">
-                    <a type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link">Agregar área</a>
+                    <a type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link">Agregar</a>
                   </li>
                 </ul>
               </div>
@@ -441,6 +442,18 @@
     <script src="{{ asset('assets/js/file-upload.js') }}"></script>
     <script src="{{ asset('assets/js/typeahead.js') }}"></script>
     <script src="{{ asset('assets/js/select2.js') }}"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <!-- End custom js for this page-->
+
+    <script>
+      $(document).ready(function() {
+          $('#areasTable').DataTable();
+          $('#requirementTable').DataTable();
+      });
+    </script>  
   </body>
 </html>

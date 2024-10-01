@@ -7,6 +7,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\RequirementsController;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\UsersController;
 
 Auth::routes();
 
@@ -15,6 +16,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::middleware(['auth'])->group(function () {
     Route::resource('requerimientos', RequirementsController::class);
     Route::get('tablero', [RequirementsController::class, 'tablero'])->name('tablero');
+    Route::resource('usuario', UsersController::class);
 });
 
 Route::group(['middleware' => ['auth', 'role:Admin']], function () {

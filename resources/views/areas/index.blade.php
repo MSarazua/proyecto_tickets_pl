@@ -14,7 +14,7 @@
             </div>
           </div>
           <div class="table-responsive pt-3">
-            <table class="table table-bordered">
+            <table id="areasTable" class="table table-striped table-bordered">
                 <thead>
                   <tr>
                       <th> ID </th>
