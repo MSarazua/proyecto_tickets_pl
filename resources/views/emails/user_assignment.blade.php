@@ -18,7 +18,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .header {
-            background-color: #4CAF50;
+            background-color:#0028ad;
             color: white;
             padding: 10px 0;
             text-align: center;
