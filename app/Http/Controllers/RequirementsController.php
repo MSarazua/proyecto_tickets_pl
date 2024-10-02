@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use App\Mail\RequirementCreated;
+use App\Mail\UserAssignmentMail;
+use App\Mail\DevAssignmentMail;
 use Illuminate\Support\Facades\Mail;
 
 class RequirementsController extends Controller
@@ -183,9 +185,11 @@ class RequirementsController extends Controller
                 }
             }
 
+
             if ($currentUser->hasRole('Admin')) {
                 if ($request->has('dev_user_id') && $requirement->dev_user_id !== $request->dev_user_id) {
                     $requirement->dev_user_id = $request->dev_user_id;
+                    $requirement->save(); // Guarda los cambios
                     if (!$logInserted) {
                         TicketLog::create([
                             'requirement_id' => $requirement->id,
@@ -195,8 +199,26 @@ class RequirementsController extends Controller
                         ]);
                         $logInserted = true;
                     }
+            
+                    $devUser = User::find($request->dev_user_id);
+                    $ownerUser = User::find($requirement->user_id);
+
+                    try {
+                        Mail::to($devUser->email)->send(new DevAssignmentMail($requirement));
+                    } catch (\Exception $e) {
+                        \Log::error('Error al enviar el correo: ' . $e->getMessage());
+                    }            
+                    // Enviar correo al propietario de la solicitud
+                    try {
+                        Mail::to($ownerUser->email)->send(new UserAssignmentMail($requirement));
+                    } catch (\Exception $e) {
+                        \Log::error('Error al enviar el correo al propietario: ' . $e->getMessage());
+                        dd('Error al enviar el correo al propietario: ' . $e->getMessage());
+                    }
                 }
             }
+            
+            
 
             if ($request->has('logs')) {
                 foreach ($request->logs as $logId => $logData) {

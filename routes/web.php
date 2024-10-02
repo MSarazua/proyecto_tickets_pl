@@ -31,3 +31,15 @@ Route::group(['middleware' => ['auth', 'role:Admin|Dev']], function () {
 });
 
 Route::post('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
+Route::get('/test-email', function () {
+    try {
+        Mail::raw('Este es un correo de prueba', function ($message) {
+            $message->to('msarazua@prensalibre.com.gt')
+                    ->subject('Correo de Prueba');
+        });
+        return 'Correo enviado correctamente';
+    } catch (\Exception $e) {
+        return 'Error al enviar el correo: ' . $e->getMessage();
+    }
+});
