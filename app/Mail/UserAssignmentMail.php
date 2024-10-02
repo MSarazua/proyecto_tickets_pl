@@ -26,6 +26,7 @@ class UserAssignmentMail extends Mailable
     public function build()
     {
         return $this->view('emails.user_assignment')
+                    ->from('plticket59@gmail.com', 'PL Ticket')
                     ->subject('Su solicitud ha sido asignada')
                     ->with(['requirement' => $this->requirement]);
     }

@@ -25,6 +25,7 @@ class DevAssignmentMail extends Mailable
     {
         return $this->view('emails.dev_assignment')
                     ->subject('Nueva solicitud asignada')
+                    ->from('plticket59@gmail.com', 'PL Ticket')
                     ->with(['requirement' => $this->requirement]);
     }
 }
