@@ -230,14 +230,16 @@
         <!-- partial:partials/_sidebar.html -->
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
           <ul class="nav">
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url('reportes') }}">
-                <i class="mdi mdi-grid-large menu-icon"></i>
-                <span class="menu-title">Reportes</span>
-              </a>
-            </li>
+            @if(auth()->user()->hasRole('Admin'))
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url('reportes') }}">
+                  <i class="mdi mdi-grid-large menu-icon"></i>
+                  <span class="menu-title">Reportes</span>
+                </a>
+              </li>
+            @endif
             <li class="nav-item nav-category">Opciones</li>
-            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('dev'))
+            @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Dev'))
               <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#users" aria-expanded="false" aria-controls="charts">
                   <i class="menu-icon mdi mdi-account-outline"></i>
@@ -260,13 +262,15 @@
               </a>
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="{{ url('requerimientos/create') }}">Nuevo requerimiento</a></li>
+                  @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('User'))
+                    <li class="nav-item"> <a class="nav-link" href="{{ url('requerimientos/create') }}">Nuevo requerimiento</a></li>
+                  @endif
                   <li class="nav-item"> <a class="nav-link" href="{{ url('requerimientos') }}">Listado de tareas</a></li>
                   <li class="nav-item"> <a class="nav-link" href="{{ route('tablero') }}">Tablero</a></li>
                 </ul>
               </div>
             </li>
-            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('dev'))
+            @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Dev'))
               <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
                   <i class="menu-icon mdi mdi-card-text-outline"></i>
