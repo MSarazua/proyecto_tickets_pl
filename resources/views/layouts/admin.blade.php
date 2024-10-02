@@ -237,19 +237,21 @@
               </a>
             </li>
             <li class="nav-item nav-category">Opciones</li>
-            <li class="nav-item">
-              <a class="nav-link" data-bs-toggle="collapse" href="#users" aria-expanded="false" aria-controls="charts">
-                <i class="menu-icon mdi mdi-account-outline"></i>
-                <span class="menu-title">Usuarios</span>
-                <i class="menu-arrow"></i>
-              </a>
-              <div class="collapse" id="users">
-                <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="{{ url('usuario') }}">Listado</a></li>
-                  <li class="nav-item"> <a class="nav-link" href="{{ route('register') }}">Agregar</a></li>
-                </ul>
-              </div>
-            </li>
+            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('dev'))
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#users" aria-expanded="false" aria-controls="charts">
+                  <i class="menu-icon mdi mdi-account-outline"></i>
+                  <span class="menu-title">Usuarios</span>
+                  <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="users">
+                  <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="{{ url('usuario') }}">Listado</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('register') }}">Agregar</a></li>
+                  </ul>
+                </div>
+              </li>
+            @endif
             <li class="nav-item">
               <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
                 <i class="menu-icon mdi mdi-floor-plan"></i>
@@ -264,21 +266,23 @@
                 </ul>
               </div>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
-                <i class="menu-icon mdi mdi-card-text-outline"></i>
-                <span class="menu-title">Áreas</span>
-                <i class="menu-arrow"></i>
-              </a>
-              <div class="collapse" id="form-elements">
-                <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="{{ url('areas') }}">Listado</a></li>
-                  <li class="nav-item">
-                    <a type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link">Agregar</a>
-                  </li>
-                </ul>
-              </div>
-            </li>
+            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('dev'))
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
+                  <i class="menu-icon mdi mdi-card-text-outline"></i>
+                  <span class="menu-title">Áreas</span>
+                  <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" id="form-elements">
+                  <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="{{ url('areas') }}">Listado</a></li>
+                    <li class="nav-item">
+                      <a type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link">Agregar</a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+            @endif
           </ul>
         </nav>
         <!-- partial -->
