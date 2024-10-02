@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
+use App\Mail\RequirementCreated;
+use Illuminate\Support\Facades\Mail;
 
 class RequirementsController extends Controller
 {
@@ -90,6 +92,10 @@ class RequirementsController extends Controller
                     $requirement_detail->save();
                 }
             }
+
+            $adminEmails = User::role('Admin')->pluck('email')->toArray();
+            // Envía el correo a los administradores
+            Mail::to($adminEmails)->send(new RequirementCreated($requirement));
 
             DB::commit();
             return redirect()->action([RequirementsController::class, 'index'])->with(['mensaje' => 'Solicitud enviada con éxito']);
