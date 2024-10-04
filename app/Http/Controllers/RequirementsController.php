@@ -97,7 +97,11 @@ class RequirementsController extends Controller
 
             $adminEmails = User::role('Admin')->pluck('email')->toArray();
             // Envía el correo a los administradores
-            Mail::to($adminEmails)->send(new RequirementCreated($requirement));
+            try {
+                Mail::to($adminEmails)->send(new RequirementCreated($requirement));
+            } catch (\Exception $e) {
+                \Log::error('Error al enviar el correo al admin: ' . $e->getMessage());
+            }
 
             DB::commit();
             return redirect()->action([RequirementsController::class, 'index'])->with(['mensaje' => 'Solicitud enviada con éxito']);
@@ -213,7 +217,6 @@ class RequirementsController extends Controller
                         Mail::to($ownerUser->email)->send(new UserAssignmentMail($requirement));
                     } catch (\Exception $e) {
                         \Log::error('Error al enviar el correo al propietario: ' . $e->getMessage());
-                        dd('Error al enviar el correo al propietario: ' . $e->getMessage());
                     }
                 }
             }
