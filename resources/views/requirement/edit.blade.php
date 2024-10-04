@@ -202,7 +202,7 @@
                                     @endif
                                 </div>       
                                 <div class="text-center">
-                                    <button type="submit" class="btn btn-dark btn-icon-text text-light"> Actualizar status
+                                    <button type="submit" style="color: white !important" class="btn btn-dark btn-icon-text text-light"> Actualizar status
                                         <i class="ti-file btn-icon-append"></i>
                                     </button>
                                 </div>

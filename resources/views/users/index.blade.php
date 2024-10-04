@@ -24,7 +24,9 @@
                         <tr>
                             <td>
                                 <div class="col-12 d-flex">
-                                    <img class="img-sm rounded-10" src="assets/images/faces/face1.jpg" alt="profile">
+                                    <a href="{{ route('usuario.edit', $item->id) }}" title="Editar" type="button" class="btn btn-inverse-dark btn-icon">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
                                     <div class="wrapper ms-3">
                                         <p class="ms-1 mb-1 fw-bold">{{ $user->name }}</p>
                                     </div>
