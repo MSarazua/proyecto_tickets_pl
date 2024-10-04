@@ -24,7 +24,7 @@
                         <tr>
                             <td>
                                 <div class="col-12 d-flex">
-                                    <a href="{{ route('usuario.edit', $item->id) }}" title="Editar" type="button" class="btn btn-inverse-dark btn-icon">
+                                    <a href="{{ route('usuario.edit', $user->id) }}" title="Editar" type="button" class="btn btn-inverse-dark btn-icon">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                     <div class="wrapper ms-3">
