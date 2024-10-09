@@ -300,7 +300,7 @@
                       <div class="btn-wrapper">
                         <a href="#" class="btn btn-otline-dark align-items-center"><i class="icon-share"></i> Share</a>
                         <a href="#" class="btn btn-otline-dark"><i class="icon-printer"></i> Print</a>
-                        <a href="#" class="btn btn-primary text-white me-0"><i class="icon-download"></i> Export</a>
+                        <a href="#" id="export-button" class="btn btn-primary text-white me-0"><i class="icon-download"></i> Export</a>
                       </div>
                     </div>
                   </div>
@@ -375,6 +375,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <!-- End custom js for this page-->
 
     <script>
@@ -382,6 +383,37 @@
           $('#areasTable').DataTable();
           $('#requirementTable').DataTable();
           $('#userTable').DataTable();
+      });
+
+      document.getElementById('export-button').addEventListener('click', function(event) {
+          event.preventDefault();
+
+          let table = $('.tableExport').DataTable();
+          let data = [];
+
+          let columnTitles = [];
+          table.columns().every(function() {
+              columnTitles.push(this.header().innerText.trim());
+          });
+          data.push(columnTitles);
+
+          table.rows().every(function() {
+              let rowData = this.data();
+              let processedRow = [];
+
+              for (let i = 0; i < rowData.length; i++) {
+                  let tempElement = document.createElement('div');
+                  tempElement.innerHTML = rowData[i];
+                  processedRow.push(tempElement.innerText.trim());
+              }
+
+              data.push(processedRow);
+          });
+          let wb = XLSX.utils.book_new();
+          let ws = XLSX.utils.aoa_to_sheet(data);
+          XLSX.utils.book_append_sheet(wb, ws, 'Requerimientos');
+
+          XLSX.writeFile(wb, 'requirements.xlsx');
       });
     </script>  
   </body>

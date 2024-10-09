@@ -13,7 +13,7 @@
             </div>
           </div>
           <div class="table-responsive  mt-1">
-            <table id="requirementTable" class="table table-striped table-bordered">
+            <table id="requirementTable" class="table table-striped table-bordered tableExport">
               <thead>
                 <tr>
                   <th>

@@ -12,7 +12,7 @@
                       </div>
                    </div>
                    <div class="mt-3">
-                    <table id="areasTable" class="table table-striped table-bordered">
+                    <table id="areasTable" class="table table-striped table-bordered tableExport">
                         <thead>
                         <tr>
                             <th> Nombre </th>
