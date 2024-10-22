@@ -17,6 +17,7 @@
                         <tr>
                             <th> Nombre </th>
                             <th> Fecha de creación </th>
+                            <th> Acciones </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -24,9 +25,6 @@
                         <tr>
                             <td>
                                 <div class="col-12 d-flex">
-                                    <a href="{{ route('usuario.edit', $user->id) }}" title="Editar" type="button" class="btn btn-inverse-dark btn-icon">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
                                     <div class="wrapper ms-3">
                                         <p class="ms-1 mb-1 fw-bold">{{ $user->name }}</p>
                                     </div>
@@ -36,6 +34,15 @@
                                 <div class="col-12">
                                     <div class="wrapper ms-3">
                                         <small class="text-muted mb-0">{{ $user->created_at }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="col-12">
+                                    <div class="wrapper ms-3">
+                                        <a href="{{ route('usuario.edit', $user->id) }}" title="Editar" type="button" class="btn btn-inverse-dark btn-icon">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </td>

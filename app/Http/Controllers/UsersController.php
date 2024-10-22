@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-
+use App\Models\Area;
 
 class UsersController extends Controller
 {
@@ -69,7 +69,11 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $roles = Role::all();
+        $areas = Area::all(); 
+
+        return view('users.edit', compact('user', 'roles', 'areas'));
     }
 
     /**
